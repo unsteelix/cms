@@ -3,7 +3,7 @@
   - [x] dev server (babel, eslint)
 - [ ] rest api
   - [x] koa web server
-  - [ ] setup firebase db
+  - [x] setup firebase db
   - [ ] errors handlers
   - [ ] api token
   - [ ] develop data format
