@@ -6,20 +6,30 @@ const app = new Koa();
 
 app.use(cors());
 
+app.use(async (ctx, next) => {
+  switch (ctx.path) {
+    case '/api':
+      ctx.body = 'list api';
+      break;
 
-app.use(async ctx => {
-  ctx.body = 'Hello World';
-  const path = ctx.request.path;
-  console.log(path);
+    case '/api/1':
+      let items = await ref.items.once('value', (snapshot) => snapshot.val());
+      ctx.body = items;
+      break;
 
-  ref.items.once("value", function(snapshot) {
-    console.log(snapshot.val());
-  });
+    case '/api/2':
+      throw new Error('sdsd')
+      break;
 
+    default:
+      ctx.status = 404;
+      ctx.body = 'not found api';
+      break;
+  }
 });
 
 app.on('error', (err, ctx) => {
-  console.log('\nServer ERROR: ', err);
+  console.log('\nServer ERROR:\n\n', err);
 });
 
 
