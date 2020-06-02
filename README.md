@@ -4,8 +4,8 @@
 - [ ] rest api
   - [x] koa web server
   - [x] setup firebase db
-  - [ ] errors handlers
-  - [ ] api token
+  - [x] errors handlers
+  - [x] api token
   - [ ] develop data format
   - [ ] upsert, delete, get  methods
   - [ ] unify output data format
