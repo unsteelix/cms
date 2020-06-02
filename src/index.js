@@ -19,13 +19,13 @@ app.use(async (ctx, next) => {
     const pass = str.split(':')[1];
 
     if (login === 'unsteelix' && pass === '12345678') {
-      next();
+      await next();
     } else {
-      ctx.throw(400, 'login/pass with error');
+      ctx.throw(401, 'login/pass with error');
     }
-    console.log(login, pass);
+    //console.log(login, pass);
   } else {
-    ctx.throw(400, 'miss authorization header');
+    ctx.throw(401, 'miss authorization header');
   }
 });
 
@@ -37,12 +37,15 @@ app.use(async (ctx, next) => {
       break;
 
     case '/api/1':
-      let items = await ref.items.once('value', (snapshot) => snapshot.val());
+      const items = await ref.items.once('value').then( snapshot => snapshot.val() );
       ctx.body = items;
+      console.log(items)
       break;
 
     case '/api/2':
-      throw new Error('sdsd')
+      let test = await ref.test.once('value').then(snap => snap.val())
+      ctx.body = test;
+      console.log(test)
       break;
 
     default:

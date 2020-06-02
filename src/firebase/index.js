@@ -13,9 +13,11 @@ admin.initializeApp({
 // As an admin, the app has access to read and write all data, regardless of Security Rules
 const db = admin.database();
 const items = db.ref('items');
+const test = db.ref('nimbus/cards/1/title')
 
 const ref = {
   items,
+  test,
 };
 
 export { ref };
