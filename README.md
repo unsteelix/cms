@@ -6,7 +6,7 @@
   - [x] setup firebase db
   - [x] errors handlers
   - [x] api token
-  - [ ] develop data format
+  - [x] develop data format
   - [ ] upsert, delete, get  methods
   - [ ] unify output data format
   - [ ] preview difference data types [text, img, files]
