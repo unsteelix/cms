@@ -1,5 +1,13 @@
-const data = {
+const req = {
+  ref: 'nimbus/cards',
+  data: {
+    'sadsd-dsa-dsa': {
+      title: 'titleeee',
+      content: 'conteeent',
+      tags: ['tag', 'tag2'],
+    },
+  },
+};
 
-}
-
-// get link by ref
+// get by ref
+// add, update, remove

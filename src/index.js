@@ -1,59 +1,47 @@
 import Koa from 'koa';
+import Router from 'koa-router';
+import bodyParser from 'koa-bodyparser';
 import cors from '@koa/cors';
-import db, { ref } from './firebase';
-import { b64decode } from './utils';
+import controller from './controllers';
+import authorization from './auth';
 
 const app = new Koa();
+const router = new Router();
 
 app.use(cors());
+app.use(bodyParser());
 
 /* check credentials */
-app.use(async (ctx, next) => {
-  const header = ctx.header;
+app.use((ctx, next) => authorization(ctx, next));
 
-  if ('authorization' in header) {
-    const auth = header.authorization;
-    const b64str = auth.split(' ')[1];
-    const str = b64decode(b64str);
-    const login = str.split(':')[0];
-    const pass = str.split(':')[1];
-
-    if (login === 'unsteelix' && pass === '12345678') {
-      await next();
-    } else {
-      ctx.throw(401, 'login/pass with error');
-    }
-    //console.log(login, pass);
-  } else {
-    ctx.throw(401, 'miss authorization header');
-  }
-});
+app.use(router.routes());
 
 /* router */
-app.use(async (ctx, next) => {
-  switch (ctx.path) {
-    case '/api':
-      ctx.body = 'list api';
-      break;
+router
+  .get('/api', (ctx, next) => {
+    ctx.body = controller.v1.getListApi();
+  })
+  .get('/api/v1/ref/:ref*', async (ctx, next) => {
+    ctx.body = await controller.v1.getDataByRef(ctx.params.ref);
+  })
+  .post('/api/v1/save', async (ctx, next) => {
+    const body = ctx.request.body;
+    const { ref, type, data } = body;
 
-    case '/api/1':
-      const items = await ref.items.once('value').then( snapshot => snapshot.val() );
-      ctx.body = items;
-      console.log(items)
-      break;
+    if (type !== 'set' && type !== 'update' && type !== 'push') {
+      ctx.throw(400, 'available types: set, update, push');
+    }
 
-    case '/api/2':
-      let test = await ref.test.once('value').then(snap => snap.val())
-      ctx.body = test;
-      console.log(test)
-      break;
-
-    default:
-      ctx.status = 404;
-      ctx.body = 'not found api';
-      break;
-  }
-});
+    ctx.body = await controller.v1.saveDataByParam({
+      ref: ref,
+      type: type,
+      data: data
+    });
+  })
+  .all('/:a*', (ctx, next) => {
+    ctx.status = 404;
+    ctx.body = 'not found api';
+  });
 
 app.on('error', (err, ctx) => {
   console.log('\nServer ERROR:\n\n', err);
