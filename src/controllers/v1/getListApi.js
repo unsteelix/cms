@@ -1,9 +1,11 @@
 const listApi = `
-/api   возвращает список всех API методов
+/api            возвращает список всех API методов
+/files/:file    директория со статикой
+/files          форма для загрузки файлов
 
 - api/v1  (все последующие методы начинаются с /api/v1)
 
-  [GET]   /ref/\${ref}    exmpl: /ref/nimbus/cards
+  [GET]   /ref/:ref    exmpl: /ref/nimbus/cards
   [POST]  /save
   {
     ref: nimbus/cards/10,

@@ -1,0 +1,29 @@
+<div>
+  <input type='file' multiple/>
+  <div id='button'>upload</div>
+  <script>
+  // Select your file input
+  const fileInput = document.querySelector("input[type='file']");
+  const button = document.querySelector('#button');
+  // Add your onchange handler
+  fileInput.onchange = async e => {
+    const files = e.target.files;
+  //console.log(files)
+    let data = new FormData();
+
+    for(let i = 0; i < files.length; i++){
+      let file = files[i];
+      data.append(`file_${i}`, file);
+    }
+    
+  
+    // Send as multipart/form-data
+    // Ensure the URL points to your server
+    const response = await fetch("/api/v1/upload", {
+      method: "POST",
+      body: data,
+    });
+  
+  };
+  </script>
+  </div>

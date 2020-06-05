@@ -1,20 +1,30 @@
 import Koa from 'koa';
 import Router from 'koa-router';
-import bodyParser from 'koa-bodyparser';
+import bodyParser from 'koa-bodyparser'; // for text, json, form
+import koaBody from 'koa-body';          // for files
+//import multer from '@koa/multer';
+import koaStatic from 'koa-static';
+
 import cors from '@koa/cors';
 import controller from './controllers';
 import authorization from './auth';
+import { getFileNameByPath, saveFiles } from './utils';
+
 
 const app = new Koa();
+app.use(koaBody({ multipart: true }));
 const router = new Router();
 
 app.use(cors());
-app.use(bodyParser());
+app.use(koaStatic('src/upload')); // Read static file directories
+app.use(router.routes());
+
+//app.use(bodyParser());
 
 /* check credentials */
-app.use((ctx, next) => authorization(ctx, next));
+//app.use((ctx, next) => authorization(ctx, next));
 
-app.use(router.routes());
+
 
 /* router */
 router
@@ -37,6 +47,27 @@ router
       type: type,
       data: data
     });
+  })
+  .post('/api/v1/upload', async (ctx, next) => {
+    try {
+      const files = ctx.request.files;
+      const listFiles = [];
+      for (let key in files) {
+        listFiles.push(files[key]);
+      }
+      const res = await saveFiles(listFiles);
+
+      ctx.body = {
+        files: res
+      }
+
+    } catch (err) {
+      console.log('\n\n ******************** \n\n', err);
+      ctx.body = {
+        message: "Ошибка при загрузке файлов",
+        errors: err
+      };
+    }
   })
   .all('/:a*', (ctx, next) => {
     ctx.status = 404;
