@@ -8,7 +8,7 @@
   - [x] api token
   - [x] develop data format
   - [x] upsert, delete, get  methods
-  - [ ] unify output data format
+  - [x] unify output data format
   - [ ] preview difference data types [text, img, files]
 - [ ] deploy
   

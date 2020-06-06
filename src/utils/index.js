@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import promisePipe from 'promisepipe';
 
+
 export const b64decode = (base64str) => {
   const buff = Buffer.from(base64str, 'base64');
   return buff.toString('utf-8');
@@ -50,5 +51,16 @@ export const saveFiles = async (files) => {
     });
   });
 
+  return res;
+};
+
+
+export const formatOutput = (param) => {
+  const { status, data } = param;
+
+  const res = {
+    status: status || 'success',
+    data: data,
+  };
   return res;
 };
