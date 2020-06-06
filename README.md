@@ -9,6 +9,6 @@
   - [x] develop data format
   - [x] upsert, delete, get  methods
   - [x] unify output data format
-  - [ ] preview difference data types [text, img, files]
+  - [x] preview difference data types [text, img, files]
 - [ ] deploy
   

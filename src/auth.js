@@ -11,6 +11,9 @@ export default async function authorization(ctx, next) {
   if (url === '/api/v1/upload') {
     return next();
   }
+  if (url === '/upload') {
+    return next();
+  }
   if (firstPath === 'files') { // static
     return next();
   }

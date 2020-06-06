@@ -4,12 +4,13 @@ import bodyParser from 'koa-bodyparser'; // for text, json, form
 import koaBody from 'koa-body';          // for files
 //import multer from '@koa/multer';
 import koaStatic from 'koa-static';
+import path from 'path';
+import fs from 'fs';
 
 import cors from '@koa/cors';
 import controller from './controllers';
 import authorization from './auth';
 import { saveFiles, formatOutput } from './utils';
-
 
 const app = new Koa();
 app.use(koaBody({ multipart: true }));
@@ -69,6 +70,30 @@ router
 
     } catch (err) {
       ctx.throw(400, 'Ошибка при загрузке файлов', err);
+    }
+  })
+  .get('/upload', async (ctx, next) => {
+    ctx.type = 'text/html; charset=utf-8';
+    ctx.body = fs.readFileSync(path.resolve('./src/upload', 'upload.html'));
+  })
+  .get('/files', async (ctx, next) => {
+    ctx.body = fs.readdirSync('src/upload/files');
+  })
+  .get('/files/preview', async (ctx, next) => {
+    const files = fs.readdirSync('src/upload/files');
+    if (files.length) {
+      let res = '';
+      files.forEach(file => {
+        const ext = path.extname(file).toLowerCase();
+        if(ext === '.jpg' || ext === '.jpeg' || ext === '.png' || ext === '.gif'){
+          res += `<div style='width: 24vw;height: 24vw;padding: 1vh;box-sizing: border-box; border: 1px solid #eaeaea;'>
+          <img src='/files/${file}' style='max-width: 100%;max-height: 100%;'/>
+          </div>`
+        }
+      })
+      ctx.body = `<div style="display:flex;flex-direction: row;flex-wrap: wrap;align-content: center;">${res}</div>`;
+    } else {
+      ctx.body = 'нет файлов';
     }
   })
   .all('/:a*', (ctx, next) => {
